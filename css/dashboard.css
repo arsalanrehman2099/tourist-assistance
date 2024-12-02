@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  body {
+    background-color: #f4f4f9;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    width: 100%;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background-color: #4070f4;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+  }
+  
+  .sidebar .logo img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  
+  .nav-links {
+    width: 100%;
+    list-style: none;
+    margin-top: 20px;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .nav-link i {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+  
+  .nav-link.active,
+  .nav-link:hover {
+    background-color: #265df2;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-header {
+    background-color: #4070f4;
+    color: #fff;
+    padding: 15px 20px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+  
+  #content-area {
+    padding: 20px;
+    background-color: #fff;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  .content {
+    display: none;
+  }
+  
+  .content.active {
+    display: block;
+  }
+  
+  .input-field {
+    margin-bottom: 15px;
+  }
+  
+  .input-field input,
+  .input-field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .input-field input[type="submit"] {
+    background-color: #4070f4;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .input-field input[type="submit"]:hover {
+    background-color: #265df2;
+  }
+  
+  /* Hidden Class */
+  .hidden {
+    display: none;
+  }
+  

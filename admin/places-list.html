@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Places List</title>
+    <link rel="stylesheet" href="../css/places-list.css" />
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Discover Places</h1>
+      </header>
+      <div id="places-list" class="places-grid">
+        <!-- Places will be dynamically added here -->
+      </div>
+    </div>
+
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcrmc-xWUUqUUTNUc4Wh1cPn2QwBx6mWk",
+        authDomain: "tourist-assistance-web.firebaseapp.com",
+        databaseURL:
+          "https://tourist-assistance-web-default-rtdb.firebaseio.com",
+        projectId: "tourist-assistance-web",
+        storageBucket: "tourist-assistance-web.appspot.com",
+        messagingSenderId: "425469167399",
+        appId: "1:425469167399:web:06db513c363870bde94b02",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Fetch and display data from Firebase
+      const placesRef = ref(database, "places");
+      const placesList = document.getElementById("places-list");
+
+      onValue(placesRef, (snapshot) => {
+        placesList.innerHTML = ""; // Clear the list before reloading
+        const places = snapshot.val();
+        if (places) {
+          Object.keys(places).forEach((key) => {
+            const place = places[key];
+            const placeElement = `
+              <div class="place-card">
+                <div class="place-image">
+                  <img src="${place.images.imageUrl1}" alt="Main Image" />
+                  <div class="category-label">${place.categoryEnglish}</div>
+                </div>
+                <div class="place-details">
+                  <h2>${place.nameEnglish} / ${place.nameArabic}</h2>
+                  <!-- 
+                  <p class="description">
+                    ${place.descEnglish} / ${place.descArabic}
+                  </p>
+                  -->
+<!-- Display the English and Arabic descriptions, limited to 50 characters each -->
+<p class="description">
+  ${
+    place.descEnglish.length > 50
+      ? place.descEnglish.slice(0, 50) + "..."
+      : place.descEnglish
+  } / 
+  ${
+    place.descArabic.length > 50
+      ? place.descArabic.slice(0, 50) + "..."
+      : place.descArabic
+  }
+</p>
+
+                  <div class="coordinates">
+                    <p><strong>Latitude:</strong> ${place.latitude}</p>
+                    <p><strong>Longitude:</strong> ${place.longitude}</p>
+                  </div>
+                </div>
+                <div class="place-gallery">
+                  <img src="${place.images.imageUrl2}" alt="Image 2" />
+                  <img src="${place.images.imageUrl3}" alt="Image 3" />
+                </div>
+              </div>
+            `;
+            placesList.innerHTML += placeElement;
+          });
+        } else {
+          placesList.innerHTML = "<p class='empty'>No places found.</p>";
+        }
+      });
+    </script>
+  </body>
+</html>

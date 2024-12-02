@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Place</title>
+    <link rel="stylesheet" href="../css/add-place.css" />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAufqVaMyToBDxvaB98TRicDpcy6OWN-cU&callback=initMap"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <div class="add-place-container">
+      <h1 class="add-place-title">Add a New Place</h1>
+      <form id="add-place-form" class="add-place-form">
+        <!-- Name (English and Arabic) -->
+        <div class="form-group">
+          <label for="name-english">Name (English):</label>
+          <input
+            type="text"
+            id="name-english"
+            class="form-input"
+            placeholder="Enter name in English"
+          />
+        </div>
+        <!-- Name (Arabic) -->
+        <div class="form-group">
+          <label for="name-arabic">الاسم (بالعربية):</label>
+          <input
+            type="text"
+            id="name-arabic"
+            class="form-input"
+            placeholder="أدخل الاسم باللغة العربية"
+            dir="rtl"
+          />
+        </div>
+
+        <!-- Description (English and Arabic) -->
+        <div class="form-group">
+          <label for="description-english">Description (English):</label>
+          <textarea
+            id="description-english"
+            class="form-input"
+            rows="3"
+            placeholder="Enter description in English"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="description-arabic">الوصف (بالعربية):</label>
+          <textarea
+            id="description-arabic"
+            class="form-input"
+            rows="3"
+            placeholder="أدخل الوصف باللغة العربية"
+            dir="rtl"
+          ></textarea>
+        </div>
+
+        <!-- Category Dropdown -->
+        <label for="category">Category</label>
+        <select id="category" required>
+          <option value="">Select a category</option>
+          <option value="Restaurants - مطاعم">Restaurants - مطاعم</option>
+          <option value="Coffee Shops - كافيهات">Coffee Shops - كافيهات</option>
+          <option value="Touristic Place - اماكن سياحية">Touristic Place - اماكن سياحية</option>
+          <option value="Park - حديقة">Park - حديقة</option>
+        </select>
+
+        <!-- Latitude and Longitude -->
+        <div class="lat-lng-group">
+          <div class="form-group-inline">
+            <label for="latitude">Latitude:</label>
+            <input
+              type="text"
+              id="latitude"
+              class="form-input"
+              placeholder="Enter latitude"
+            />
+          </div>
+          <div class="form-group-inline">
+            <label for="longitude">Longitude:</label>
+            <input
+              type="text"
+              id="longitude"
+              class="form-input"
+              placeholder="Enter longitude"
+            />
+          </div>
+        </div>
+
+        <!-- Image URLs -->
+        <div class="form-group">
+          <label for="image-url-1">Image URL # 01:</label>
+          <input
+            type="text"
+            id="image-url-1"
+            class="form-input"
+            placeholder="Enter image URL 1"
+          />
+        </div>
+        <div class="form-group">
+          <label for="image-url-2">Image URL # 02:</label>
+          <input
+            type="text"
+            id="image-url-2"
+            class="form-input"
+            placeholder="Enter image URL 2"
+          />
+        </div>
+        <div class="form-group">
+          <label for="image-url-3">Image URL # 03:</label>
+          <input
+            type="text"
+            id="image-url-3"
+            class="form-input"
+            placeholder="Enter image URL 3"
+          />
+        </div>
+
+        <!-- Map Section -->
+        <div class="form-group">
+          <label for="map">Pick Location on Map:</label>
+          <div id="map" class="map"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" class="submit-button" id="submit-btn">
+          Save Place
+        </button>
+      </form>
+    </div>
+    <script>
+      // Initialize Google Map
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 24.721802, lng: 45.6396244 },
+          zoom: 5,
+        });
+
+        const marker = new google.maps.Marker({
+          position: { lat: 24.721802, lng: 45.6396244 },
+          map: map,
+          draggable: true,
+        });
+
+        // Update latitude and longitude inputs when marker is dragged
+        google.maps.event.addListener(marker, "dragend", function () {
+          document.getElementById("latitude").value = marker
+            .getPosition()
+            .lat()
+            .toFixed(6);
+          document.getElementById("longitude").value = marker
+            .getPosition()
+            .lng()
+            .toFixed(6);
+        });
+      }
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcrmc-xWUUqUUTNUc4Wh1cPn2QwBx6mWk",
+        authDomain: "tourist-assistance-web.firebaseapp.com",
+        databaseURL:
+          "https://tourist-assistance-web-default-rtdb.firebaseio.com",
+        projectId: "tourist-assistance-web",
+        storageBucket: "tourist-assistance-web.appspot.com",
+        messagingSenderId: "425469167399",
+        appId: "1:425469167399:web:06db513c363870bde94b02",
+        measurementId: "G-GB2EHP0YMQ",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      console.log("Firebase Initialized");
+
+      // Validate Form and Show Alert
+      document
+        .getElementById("submit-btn")
+        .addEventListener("click", function () {
+          const nameEnglish = document
+            .getElementById("name-english")
+            .value.trim();
+          const nameArabic = document
+            .getElementById("name-arabic")
+            .value.trim();
+          const descEnglish = document
+            .getElementById("description-english")
+            .value.trim();
+          const descArabic = document
+            .getElementById("description-arabic")
+            .value.trim();
+          const latitude = document.getElementById("latitude").value.trim();
+          const longitude = document.getElementById("longitude").value.trim();
+          const imageUrl1 = document.getElementById("image-url-1").value.trim();
+          const imageUrl2 = document.getElementById("image-url-2").value.trim();
+          const imageUrl3 = document.getElementById("image-url-3").value.trim();
+          const category = document.getElementById("category").value;
+          
+          // Input Validation
+          if (!nameEnglish || !nameArabic) {
+            alert("Please enter the name in both English and Arabic.");
+            return;
+          }
+          if (!descEnglish || !descArabic) {
+            alert("Please enter the description in both English and Arabic.");
+            return;
+          }
+          if (!latitude || isNaN(latitude) || !longitude || isNaN(longitude)) {
+            alert("Please enter valid latitude and longitude.");
+            return;
+          }
+          if (!(imageUrl1)) {
+            alert("Please enter a valid URL for Image 1.");
+            return;
+          }
+          if (!(imageUrl2)) {
+            alert("Please enter a valid URL for Image 2.");
+            return;
+          }
+          if (!(imageUrl3)) {
+            alert("Please enter a valid URL for Image 3.");
+            return;
+          } if (!categoryEnglish){
+            alert('Category must be selected.')
+            return;
+          }
+
+          const categoryEnglish = category.split("-")[0].trim();
+          const categoryArabic = category.split("-")[1].trim(); 
+          
+          const placeId = Date.now(); 
+          const placeData = {
+            placeId,
+            nameEnglish,
+            nameArabic,
+            descEnglish,
+            descArabic,
+            latitude,
+            longitude,
+            images: {
+              imageUrl1,
+              imageUrl2,
+              imageUrl3,
+            },
+            categoryEnglish,
+            categoryArabic,
+          };
+
+          set(ref(database, "places/" + placeId), placeData)
+            .then(() => {
+              alert("Data saved successfully!");
+              // Clear form fields if needed
+              document.getElementById("name-english").value = "";
+              document.getElementById("name-arabic").value = "";
+              document.getElementById("description-english").value = "";
+              document.getElementById("description-arabic").value = "";
+              document.getElementById("latitude").value = "";
+              document.getElementById("longitude").value = "";
+              document.getElementById("image-url-1").value = "";
+              document.getElementById("image-url-2").value = "";
+              document.getElementById("image-url-3").value = "";
+            })
+            .catch((error) => {
+              console.error("Error saving data:", error);
+              alert("Failed to save data. Please try again.");
+            });
+        });
+    </script>
+  </body>
+</html>

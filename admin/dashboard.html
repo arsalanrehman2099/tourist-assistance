@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="../assets/images/logo1.svg" alt="Logo" />
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a href="#" id="places-list" class="nav-link active">
+              <i class="uil uil-list-ul"></i>
+              <span>Places List</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="add-place" class="nav-link">
+              <i class="uil uil-plus-circle"></i>
+              <span>Add New Place</span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="#" id="contact-request" class="nav-link">
+              <i class="uil uil-users-alt"></i>
+              <span>Contact Requests</span>
+            </a>
+          </li>
+         
+          <!--
+          <li>
+            <a href="#" id="user-list" class="nav-link">
+              <i class="uil uil-users-alt"></i>
+              <span>Users</span>
+            </a>
+          </li>
+          -->
+          <li>
+            <a href="#" id="logout" class="nav-link">
+              <i class="uil uil-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <header class="dashboard-header">
+          <h1 id="dashboard-title">Places List</h1>
+        </header>
+
+        <section id="content-area">
+          <iframe
+            id="dynamic-content"
+            src="places-list.html"
+            frameborder="0"
+            style="width: 100%; height: 80vh"
+          ></iframe>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          document.querySelectorAll(".nav-link").forEach((nav) => {
+            nav.classList.remove("active");
+          });
+          this.classList.add("active");
+
+          const title = this.querySelector("span").textContent;
+          document.getElementById("dashboard-title").textContent = title;
+
+          const contentId = this.id;
+          let contentFile = "";
+
+          switch (contentId) {
+            case "places-list":
+              contentFile = "places-list.html";
+              break;
+            case "add-place":
+              contentFile = "add-place.html";
+              break;
+            case "contact-request":
+              contentFile = "contact-requests.html";
+              break;
+            case "logout":
+              alert("You have successfully logged out!");
+              window.location.href = "admin-login.html"; // Redirect to login
+              return;
+          }
+
+          document.getElementById("dynamic-content").src = contentFile;
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("dynamic-content").src = "places-list.html";
+      });
+    </script>
+  </body>
+</html>

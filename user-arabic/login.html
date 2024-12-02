@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+    <link rel="stylesheet" href="../css/user-login.css" />
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <title>Tourist Assistance - Login & Signup</title>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"></script>
+   
+  
+  </head>
+  <body>
+  
+
+
+    <header class="header" data-header>
+      <div class="header-top">
+        <div class="container">
+          <a href="index.html" class="logo">
+            <img src="../assets/images/logo1.svg" alt="Tourist Assistance" />
+          </a>
+        </div>
+      </div>
+    </header>
+    <div class="loginin">
+      <div class="forms">
+        <div class="form login">
+          <span class="title">تسجيل الدخول</span>
+
+          <form action="#">
+            <div class="input-field">
+              <input type="text" placeholder="أدخل بريدك الإلكتروني" required  dir="rtl"/>
+              <i class="uil uil-envelope icon"></i>
+            </div>
+            <div class="input-field">
+              <input
+                type="password"
+                class="password"
+                placeholder="أدخل كلمة المرور الخاصة بك"
+                required
+                dir="rtl"
+              />
+              <i class="uil uil-lock icon"></i>
+              <!-- <i class="uil uil-eye-slash showHidePw"></i> -->
+            </div>
+
+            <div class="checkbox-text">
+              <div class="checkbox-content">
+                <input type="checkbox" id="logCheck" checked />
+                <label for="logCheck" class="text">تذكرنى</label>
+              </div>
+
+              <a href="#" class="text">هل نسيت كلمة السر؟</a>
+            </div>
+
+            <div id="login-btn" class="input-field button">
+              <input type="button" value="تسجيل الدخول" />
+            </div>
+            <div id="loader" class="loader" style="display: none"></div>
+          </form>
+
+          <div class="login-signup">
+            <span class="text"
+              >لست عضوا؟
+              <a href="#" class="text signup-link">سجل الآن</a>
+            </span>
+            <!-- <span class="textt"
+              >OR
+              <a href="../index.html" class="Back Home"> Back Home</a>
+            </span> -->
+          </div>
+        </div>
+
+        <div class="form signup">
+          <span class="title">تسجيل</span>
+
+          <form id="signup-form">
+            <div class="input-field">
+              <input
+                id="name"
+                type="text"
+                placeholder="أدخل اسمك"
+                required
+                dir="rtl"
+              />
+              <i class="uil uil-user"></i>
+            </div>
+            <div class="input-field">
+              <input
+                id="email"
+                type="text"
+                placeholder="أدخل بريدك الإلكتروني"
+                required
+                dir="rtl"
+              />
+              <i class="uil uil-envelope icon"></i>
+            </div>
+            <div class="input-field">
+              <input
+                id="password"
+                type="password"
+                class="password"
+                placeholder="قم بإنشاء كلمة مرور"
+                required
+                dir="rtl"
+              />
+              <i class="uil uil-lock icon"></i>
+            </div>
+            <div class="input-field">
+              <input
+                id="confirm-password"
+                type="password"
+                class="password"
+                placeholder="تأكيد كلمة المرور"
+                required
+                dir="rtl"
+              />
+              <i class="uil uil-lock icon"></i>
+              <!-- <i class="uil uil-eye-slash showHidePw"></i> -->
+            </div>
+
+            <div class="checkbox-text">
+              <div class="checkbox-content">
+                <input type="checkbox" id="termCon" />
+                <label for="termCon" class="text"
+                  >لقد قبلت جميع الشروط والأحكام</label
+                >
+              </div>
+            </div>
+
+            <div id="signup-btn" class="input-field button">
+              <input type="button" value="اشتراك" />
+            </div>
+
+            <div id="loader" class="loader" style="display: none"></div>
+          </form>
+
+          <div class="login-signup">
+            <span class="text"
+              >هل أنت عضو بالفعل؟
+              <a href="#" class="text login-link">تسجيل الدخول الآن</a>
+            </span>
+            <!-- <span class="textt"
+              >OR
+              <a href="../index.html" class="Back Home"> Back Home</a>
+            </span> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcrmc-xWUUqUUTNUc4Wh1cPn2QwBx6mWk",
+        authDomain: "tourist-assistance-web.firebaseapp.com",
+        databaseURL:
+          "https://tourist-assistance-web-default-rtdb.firebaseio.com",
+        projectId: "tourist-assistance-web",
+        storageBucket: "tourist-assistance-web.firebasestorage.app",
+        messagingSenderId: "425469167399",
+        appId: "1:425469167399:web:06db513c363870bde94b02",
+        measurementId: "G-GB2EHP0YMQ",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const database = getDatabase(app);
+      console.log("Firebase Initialization Complete");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginin = document.querySelector(".loginin");
+        const pwShowHide = document.querySelectorAll(".showHidePw");
+        const pwFields = document.querySelectorAll(".password");
+        const signUp = document.querySelector(".signup-link");
+        const login = document.querySelector(".login-link");
+        const signup_btn = document.querySelector("#signup-btn");
+        const login_btn = document.querySelector("#login-btn");
+        const rememberMeCheckbox = document.querySelector("#logCheck");
+
+        // Show/hide password logic
+        pwShowHide.forEach((eyeIcon) => {
+          eyeIcon.addEventListener("click", () => {
+            pwFields.forEach((pwField) => {
+              if (pwField.type === "password") {
+                pwField.type = "text";
+                pwShowHide.forEach((icon) => {
+                  icon.classList.replace("uil-eye-slash", "uil-eye");
+                });
+              } else {
+                pwField.type = "password";
+                pwShowHide.forEach((icon) => {
+                  icon.classList.replace("uil-eye", "uil-eye-slash");
+                });
+              }
+            });
+          });
+        });
+
+        // Switch to signup view
+        signUp.addEventListener("click", () => {
+          loginin.classList.add("active");
+        });
+
+        // Switch to login view
+        login.addEventListener("click", () => {
+          loginin.classList.remove("active");
+        });
+
+        // ******************** Sign up button clicked ******************** //
+        signup_btn.addEventListener("click", () => {
+          const name = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value.trim();
+          const confirmPassword = document
+            .getElementById("confirm-password")
+            .value.trim();
+          const terms = document.getElementById("termCon").checked;
+
+          let errors = [];
+
+          if (name === "") {
+            errors.push("Name is required.");
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            errors.push("Enter a valid email address.");
+          }
+
+          if (password.length < 6) {
+            errors.push("Password must be at least 6 characters long.");
+          }
+
+          if (password !== confirmPassword) {
+            errors.push("Passwords do not match.");
+          }
+
+          if (!terms) {
+            errors.push("You must accept the terms and conditions.");
+          }
+
+          if (errors.length > 0) {
+            alert(errors.join("\n"));
+          } else {
+            // loader
+            const loader = document.getElementById("loader");
+            loader.style.display = "block";
+            signup_btn.disabled = true;
+
+            console.log("Attempting Firebase Authentication...");
+
+            // Firebase Authentication: Create a new user
+            createUserWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("User signed up successfully:", user);
+
+                // Save user data to Firebase Realtime Database
+                set(ref(database, "users/" + user.uid), {
+                  name: name,
+                  email: email,
+                })
+                  .then(() => {
+                    loader.style.display = "none";
+                    signup_btn.disabled = false;
+                    window.location.href = "login.html";
+                    alert("Sign up successful! Please login to continue.");
+                  })
+                  .catch((error) => {
+                    loader.style.display = "none";
+                    signup_btn.disabled = false;
+                    console.error("Error saving user data:", error);
+                    alert("Failed to save user data. Please try again.");
+                  });
+              })
+              .catch((error) => {
+                loader.style.display = "none";
+                signup_btn.disabled = false;
+                console.error("Error during Firebase Authentication:", error);
+                alert("Signup failed: " + error.message);
+              });
+          }
+        });
+
+        // ******************** Login button clicked ******************** //
+        login_btn.addEventListener("click", () => {
+          const email = document
+            .querySelector('form .input-field input[type="text"]')
+            .value.trim();
+          const password = document
+            .querySelector('form .input-field input[type="password"]')
+            .value.trim();
+
+          let errors = [];
+          if (email === "") {
+            errors.push("Email is required.");
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            errors.push("Enter a valid email address.");
+          }
+
+          if (password === "") {
+            errors.push("Password is required.");
+          }
+
+          if (errors.length > 0) {
+            alert(errors.join("\n"));
+            return;
+          }
+          // loader
+          const loader = document.getElementById("loader");
+          loader.style.display = "block";
+          login_btn.disabled = true;
+
+          console.log("Attempting Firebase Login...");
+
+          // Firebase Authentication: Sign in user
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              console.log("Login successful for user:", user);
+              loader.style.display = "none";
+              login_btn.disabled = false;
+              // if (rememberMeCheckbox.checked) {
+              //   localStorage.setItem("rememberedEmail", email);
+              // } else {
+              //   localStorage.removeItem("rememberedEmail");
+              // }
+              localStorage.setItem("rememberedEmail", email);
+
+              // Redirect user to dashboard or another page
+              alert("Login successful!");
+              window.location.href = "../index-ar.html"; // Update with the correct target URL
+            })
+            .catch((error) => {
+              loader.style.display = "none";
+              login_btn.disabled = false;
+              console.error("Login failed:", error);
+              alert("Login failed: " + error.message);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

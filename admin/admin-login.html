@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+    <link rel="stylesheet" href="../css/admin-login.css" />
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+    <title>Admin Login - Tourist Assistance</title>
+  </head>
+  <body>
+    <header class="header" data-header>
+      <div class="header-top">
+        <div class="container">
+          <a href="index.html" class="logo">
+            <img src="../assets/images/logo1.svg" alt="Tourist Assistance" />
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="loginin">
+      <div class="form">
+        <span class="title">Admin Login</span>
+        <form id="admin-login-form">
+          <div class="input-field">
+            <input type="text" placeholder="Enter your email" required />
+            <i class="uil uil-envelope icon"></i>
+          </div>
+          <div class="input-field">
+            <input
+              type="password"
+              class="password"
+              placeholder="Enter your password"
+              required
+            />
+            <i class="uil uil-lock icon"></i>
+            <i class="uil uil-eye-slash showHidePw"></i>
+          </div>
+
+          <div class="input-field button">
+            <input type="button" value="Login" id="admin-login-btn" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("admin-login-btn")
+        .addEventListener("click", function () {
+          const email = document
+            .querySelector(".input-field input[type='text']")
+            .value.trim();
+          const password = document
+            .querySelector(".input-field input[type='password']")
+            .value.trim();
+          if (!email) {
+            alert("Please enter your email.");
+            return;
+          }
+          if (!password) {
+            alert("Please enter your password.");
+            return;
+          }
+
+          if (email === "admin" && password === "admin") {
+            // alert("Login successful!");
+            window.location.href = "dashboard.html";
+          } else {
+            alert("Invalid email or password. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

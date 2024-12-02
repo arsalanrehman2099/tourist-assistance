@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Requests</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      .contact-request {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .contact-request h5 {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2 class="text-center mb-4">Contact Requests</h2>
+      <div id="contact-requests-list">
+        <!-- Contact requests will be displayed here -->
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+      } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcrmc-xWUUqUUTNUc4Wh1cPn2QwBx6mWk",
+        authDomain: "tourist-assistance-web.firebaseapp.com",
+        databaseURL:
+          "https://tourist-assistance-web-default-rtdb.firebaseio.com",
+        projectId: "tourist-assistance-web",
+        storageBucket: "tourist-assistance-web.appspot.com",
+        messagingSenderId: "425469167399",
+        appId: "1:425469167399:web:06db513c363870bde94b02",
+        measurementId: "G-GB2EHP0YMQ",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      console.log("Firebase Initialized");
+
+      // Fetch and display contact requests
+      function fetchContactRequests() {
+        const contactRequestsRef = ref(database, "contactForms");
+
+        get(contactRequestsRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              const contactRequestsList = document.getElementById(
+                "contact-requests-list"
+              );
+              contactRequestsList.innerHTML = ""; // Clear the list before adding new data
+
+              // Loop through the contact requests and display them
+              Object.values(data).forEach((request) => {
+                const requestElement = document.createElement("div");
+                requestElement.classList.add("contact-request");
+
+                requestElement.innerHTML = `
+                <h5>${request.name}</h5>
+                <p><strong>Email:</strong> ${request.email}</p>
+                <p><strong>Message:</strong> ${request.message}</p>
+                <p><small><strong>Submitted on:</strong> ${new Date(
+                  request.timestamp
+                ).toLocaleString()}</small></p>
+              `;
+                contactRequestsList.appendChild(requestElement);
+              });
+            } else {
+              document.getElementById("contact-requests-list").innerHTML =
+                "<p>No contact requests available.</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            alert("Failed to load contact requests. Please try again.");
+          });
+      }
+
+      // Load contact requests when the page is loaded
+      document.addEventListener("DOMContentLoaded", fetchContactRequests);
+    </script>
+  </body>
+  <style>
+    /* General Reset */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      /* background-color: #f4f4f9; */
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #4070f4;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .contact-request {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e1e1e1;
+    }
+
+    .contact-request h5 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #265df2;
+      margin-bottom: 10px;
+    }
+
+    .contact-request p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .contact-request p strong {
+      color: #4070f4;
+    }
+
+    .contact-request small {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #999;
+    }
+
+    .contact-request:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .contact-request {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</html>
